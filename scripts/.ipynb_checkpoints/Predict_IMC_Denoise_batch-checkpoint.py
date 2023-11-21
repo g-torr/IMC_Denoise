@@ -10,9 +10,9 @@ from os import listdir
 from os.path import isfile, join, abspath, exists
 from glob import glob
 import tifffile as tp
-from tensorflow.keras import optimizers
-from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Input
+from keras import optimizers
+from keras.models import Model
+from keras.layers import Input
 from IMC_Denoise.IMC_Denoise_main.DeepSNiF_model import DeepSNiF_net, DeepSNiF_net_small
 from IMC_Denoise.IMC_Denoise_main.loss_functions import create_I_divergence, create_mse
 from IMC_Denoise.IMC_Denoise_main.DIMR import DIMR
@@ -77,12 +77,11 @@ Max_row_num = 0
 Max_col_num = 0
 Image_collect = []
 Img_folders = glob(join(args.load_directory, "*", ""))
-
 myDIMR = DIMR(n_neighbours = args.n_neighbours, n_iter = args.n_iter, window_size = args.slide_window_size)
 for Sub_img_folder in Img_folders:
     Img_list = [f for f in listdir(Sub_img_folder) if isfile(join(Sub_img_folder, f)) & (f.endswith(".tiff") or f.endswith(".tif"))]
     for Img_file in Img_list:
-        if args.channel_name.lower() == os.path.splitext(Img_file)[0].lower():#strip extension to file and check it matches with marker
+        if args.channel_name.lower() in Img_file.lower():
             Img_read = tp.imread(Sub_img_folder + Img_file).astype('float32')
             if args.DIMR:
                 Img_read = myDIMR.perform_DIMR(Img_read)
@@ -152,7 +151,7 @@ for ii in range(Img_num):
         Img_denoised = Img_denoised * myrange
     
     Img_denoised[Img_denoised<0] = 0
-    sub_save_directory = join(args.save_directory, Sub_img_folder.lstrip(args.load_directory))#original code strip one caracter too many
+    sub_save_directory = join(args.save_directory, Sub_img_folder[len(args.load_directory)+1:])
     if not exists(sub_save_directory):
         os.makedirs(sub_save_directory)
     tp.imsave(join(sub_save_directory, Img_name), Img_denoised.astype('float32'))

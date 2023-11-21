@@ -6,10 +6,10 @@ from os.path import join, exists, abspath
 import gc
 
 from sklearn.model_selection import train_test_split
-from keras import optimizers
-from keras.models import Model
-from keras.layers import Input
-from keras.callbacks import Callback, ModelCheckpoint, ReduceLROnPlateau
+from tensorflow.keras import optimizers
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Input
+from tensorflow.keras.callbacks import Callback, ModelCheckpoint, ReduceLROnPlateau
 
 from .DIMR import DIMR
 from .DeepSNiF_model import DeepSNiF_net, DeepSNiF_net_small
